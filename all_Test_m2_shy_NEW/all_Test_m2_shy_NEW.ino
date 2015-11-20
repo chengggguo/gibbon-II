@@ -10,7 +10,7 @@ float initRiseTime, initResetTime, initShyTime, durShyTime, resetShyTime;
 bool riseTrigger = false;
 bool resetTrigger = false;
 bool shyTrigger = false;
-float riseLimit = 50000; // working time
+float riseLimit = 30000; // working time
 float resetLimit = 10000; // rest time
 float shyRunLimit = 10000;
 float shyResetLimit = 5000;
@@ -59,16 +59,16 @@ void loop() {
   if (resetState == false) {
     if (riseTrigger == false) {
       initRiseTime = millis();
-      if (shyTrigger == true) {
-        initShyTime =  millis();
-      } else {
-        resetShyTime = millis();
-      }
+//      if (shyTrigger == true) {
+//        initShyTime =  millis();
+//      } else {
+//        resetShyTime = millis();
+//      }
     }
     riseTrigger = true;
     eventRiseTimer();
-    shyRunTimer();
-    shyResetTimer();
+//    shyRunTimer();
+//    shyResetTimer();
 
   } else {
     /// stop moment ////
@@ -211,5 +211,4 @@ void shyResetTimer() {
   }
 
 }
-
 
