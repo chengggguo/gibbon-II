@@ -149,13 +149,13 @@ void sweep() {
     Serial.print(stopCom);
 //    delay(20);
     Serial.print("\r");
-    Serial.print("#3 P650 S3000 #15 P650 S3000 #11 P650 S3000 #7 P650 S3000 #19 P650 S3000 #23 P650 S3000");
+    Serial.print("#3 P650 S3500 #15 P650 S3500 #11 P650 S3500 #7 P650 S3500 #19 P650 S3500 #23 P650 S3500");
     Serial.print("\r");
     delay(1500);
     Serial.print(runCom);
 //    delay(20);
     Serial.print("\r");
-    Serial.print("#3 P1130 S3000 #15 P1130 S3000 #11 P1130 S3000 #7 P1130 S3000 #19 P1130 S3000 #23 P1130 S3000");
+    Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
     Serial.print("\r");
     delay(1500);
   }
