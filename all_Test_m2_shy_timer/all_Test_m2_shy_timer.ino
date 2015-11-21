@@ -9,13 +9,15 @@ int motorPins [totalSensors] = {3, 5, 6, 9, 10, 11};
 float initRiseTime, initResetTime, initShyTime, durShyTime, resetShyTime;
 bool riseTrigger = false;
 bool resetTrigger = false;
-bool shyTrigger = false;
-float riseLimit = 30000; // working time
-float resetLimit = 10000; // rest time
-float shyRunLimit = 10000;
-float shyResetLimit = 5000;
+
+float riseLimit = 100000; // working time
+float resetLimit = 15000; // rest time
+float shyRunLimit = 5000;
+float shyResetLimit = 3000;
 boolean resetState = false;
 boolean stopState [totalSensors];
+boolean shyRunTrigger = false;
+boolean shyResetTrigger = false;
 
 // ThreadController that will controll all threads
 ThreadController controll = ThreadController();
@@ -59,16 +61,18 @@ void loop() {
   if (resetState == false) {
     if (riseTrigger == false) {
       initRiseTime = millis();
-      if (shyTrigger == true) {
+      if (shyRunTrigger == true) {
         initShyTime =  millis();
-      } else {
-        resetShyTime = millis();
+        //        shyRunTimer();
+        //      } else {
+        //        resetShyTime = millis();
+        //        shyResetTimer();
       }
     }
     riseTrigger = true;
     eventRiseTimer();
-    shyRunTimer();
-    shyResetTimer();
+
+
 
   } else {
     /// stop moment ////
@@ -103,9 +107,8 @@ void sweep() {
   for (int i = 0; i < totalSensors; i++) {
     if (sensors[i] == 1) {
       stopState[i] = true;
-      shyTrigger = true;
+      shyRunTrigger = true;
       durShyTime = millis();
-      //      Serial.println(durShyTime);
       switch (sensorPins[i]) {
         case 2:
           values[i] = "#0 P700 S300 #1 P2300 S300";
@@ -138,7 +141,7 @@ void sweep() {
     } else {
       stopState[i] = false;
 
-      shyResetTimer();
+      //      shyResetTimer();
     }
   }
 
@@ -151,13 +154,13 @@ void sweep() {
     Serial.print("\r");
     Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
     Serial.print("\r");
-    delay(1000);
+    delay(800);
     Serial.print(runCom);
     //    delay(20);
     Serial.print("\r");
     Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
     Serial.print("\r");
-    delay(5000);
+    delay(3000);
   }
   else {
     String stopCom = "#0 P2150 S400 #1 P850 S400 #8 P2150 S400 #9 P850 S400 #16 P2200 S400 #17 P800 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
@@ -166,16 +169,16 @@ void sweep() {
     Serial.print("\r");
     delay(800);
   }
-
+  shyRunTimer();
 }
 
 int* checkSensors()  {
   for (int i = 0; i < totalSensors; i++) {
     sensors[i] = digitalRead(sensorPins[i]);
-    Serial.print(sensors[i]);
-    Serial.print(" / ");
+    //    Serial.print(sensors[i]);
+    //    Serial.print(" / ");
   }
-  Serial.println("");
+  //  Serial.println("");
   return sensors;
 }
 
@@ -196,22 +199,21 @@ void eventResetTimer() {
 }
 
 void shyRunTimer() {
-  if (initShyTime > 0); {
-    if (durShyTime - initShyTime > shyRunLimit) {
-      resetState = true;
-      riseTrigger = false;
-      shyTrigger = false;
-      initShyTime = 0;
-    }
+  if (durShyTime - initShyTime > shyRunLimit) {
+    resetState = true;
+    riseTrigger = false;
+    shyRunTrigger = false;
+    durShyTime = 0;
+    initShyTime = 0;
   }
 }
 
+
 void shyResetTimer() {
   if (resetShyTime - durShyTime > shyResetLimit) {
-    shyTrigger = false;
+    shyRunTrigger = false;
     resetState = false;
     resetTrigger = false;
-    initShyTime = 0;
   }
 
 }
