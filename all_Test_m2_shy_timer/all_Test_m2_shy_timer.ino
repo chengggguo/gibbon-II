@@ -59,16 +59,16 @@ void loop() {
   if (resetState == false) {
     if (riseTrigger == false) {
       initRiseTime = millis();
-//      if (shyTrigger == true) {
-//        initShyTime =  millis();
-//      } else {
-//        resetShyTime = millis();
-//      }
+      if (shyTrigger == true) {
+        initShyTime =  millis();
+      } else {
+        resetShyTime = millis();
+      }
     }
     riseTrigger = true;
     eventRiseTimer();
-//    shyRunTimer();
-//    shyResetTimer();
+    shyRunTimer();
+    shyResetTimer();
 
   } else {
     /// stop moment ////
@@ -105,7 +105,7 @@ void sweep() {
       stopState[i] = true;
       shyTrigger = true;
       durShyTime = millis();
-//      Serial.println(durShyTime);
+      //      Serial.println(durShyTime);
       switch (sensorPins[i]) {
         case 2:
           values[i] = "#0 P700 S300 #1 P2300 S300";
@@ -138,7 +138,7 @@ void sweep() {
     } else {
       stopState[i] = false;
 
-      //      shyStopTimer();
+      shyResetTimer();
     }
   }
 
@@ -147,13 +147,13 @@ void sweep() {
     String stopCom = values[0] + values[1] + values[2] + values[3] + values[4] + values[5];
     String runCom = "#0 P700 S300 #1 P2300 S300 #8 P700 S300 #9 P2300 S300 #16 P700 S300 #17 P2300 S300 #4 P900 S300 #5 P2100 S300 #12 P900 S300 #13 P2100 S300 #20 P900 S300 #21 P2100";
     Serial.print(stopCom);
-//    delay(20);
+    //    delay(20);
     Serial.print("\r");
     Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
     Serial.print("\r");
     delay(1000);
     Serial.print(runCom);
-//    delay(20);
+    //    delay(20);
     Serial.print("\r");
     Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
     Serial.print("\r");
@@ -215,3 +215,4 @@ void shyResetTimer() {
   }
 
 }
+
