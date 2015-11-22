@@ -10,10 +10,10 @@ float initRiseTime, initResetTime, initShyTime, durShyTime, resetShyTime;
 bool riseTrigger = false;
 bool resetTrigger = false;
 
-float riseLimit = 100000; // working time
-float resetLimit = 15000; // rest time
-float shyRunLimit = 5000;
-float shyResetLimit = 3000;
+float riseLimit = 10000000; // working time
+float resetLimit = 10000; // rest time
+float shyRunLimit = 15000;
+float shyResetLimit = 2000;
 boolean resetState = false;
 boolean stopState [totalSensors];
 boolean shyRunTrigger = false;
@@ -63,10 +63,8 @@ void loop() {
       initRiseTime = millis();
       if (shyRunTrigger == true) {
         initShyTime =  millis();
-        //        shyRunTimer();
-        //      } else {
-        //        resetShyTime = millis();
-        //        shyResetTimer();
+      } else {
+        resetShyTime = millis();
       }
     }
     riseTrigger = true;
@@ -140,8 +138,7 @@ void sweep() {
       };
     } else {
       stopState[i] = false;
-
-      //      shyResetTimer();
+      shyResetTimer();
     }
   }
 
@@ -167,7 +164,11 @@ void sweep() {
     Serial.print(stopCom);
     delay(20);
     Serial.print("\r");
+//    for (int i = 0; i < totalSensors; i++) {
+//      digitalWrite(motorPins[i], LOW);
+//    }
     delay(800);
+
   }
   shyRunTimer();
 }
@@ -214,6 +215,8 @@ void shyResetTimer() {
     shyRunTrigger = false;
     resetState = false;
     resetTrigger = false;
+    durShyTime = 0;
+    resetShyTime = 0;
   }
 
 }
