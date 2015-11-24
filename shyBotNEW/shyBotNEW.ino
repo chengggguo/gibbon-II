@@ -58,14 +58,14 @@ void defaultSweep (GeneralSweep callback) {
     String runCom = "#0 P700 S300 #1 P2300 S300 #8 P700 S300 #9 P2300 S300 #16 P700 S300 #17 P2300 S300 #4 P900 S300 #5 P2100 S300 #12 P900 S300 #13 P2100 S300 #20 P900 S300 #21 P2100";
     Serial.print(stopCom);
     Serial.print("\r");
-    Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
+    Serial.print("#3 P1130 S4000 #15 P1130 S4000 #11 P1130 S4000 #7 P1130 S4000 #19 P1130 S4000 #23 P1130 S4000");
     Serial.print("\r");
-    delay(800);
+    delay(750);
     Serial.print(runCom);
     Serial.print("\r");
-    Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
+    Serial.print("#3 P650 S500 #15 P650 S500 #11 P650 S500 #7 P650 S500 #19 P650 S500 #23 P650 S500");
     Serial.print("\r");
-    delay(3000);
+    delay(4000);
     sweepCount++;
     collapseCount = 0;
   }
