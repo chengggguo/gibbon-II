@@ -73,7 +73,7 @@ void defaultSweep (GeneralSweep callback) {
 
 ///////////////////////
 void collapse() {
-  String stopCom = "#0 P2150 S400 #1 P850 S400 #8 P2150 S400 #9 P850 S400 #16 P2200 S400 #17 P800 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
+  String stopCom = "#0 P2000 S400 #1 P1000 S400 #8 P2000 S400 #9 P1000 S400 #16 P2000 S400 #17 P1000 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
   Serial.print(stopCom);
   Serial.print("\r");
   delay(1000);
