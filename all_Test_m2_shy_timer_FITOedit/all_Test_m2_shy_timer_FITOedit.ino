@@ -10,11 +10,13 @@ float initRiseTime, initResetTime, initShyTime, durShyTime, resetShyTime;
 bool riseTrigger = false;
 bool resetTrigger = false;
 
-float riseLimit = 10000000; // working time
-float resetLimit = 10000; // rest time
+float riseLimit = 60000; // working time
+float resetLimit = 20000; // rest time
 float shyRunLimit = 15000;
 float shyResetLimit = 2000;
 boolean resetState = false;
+boolean resetShyState = false;
+boolean isTherePeople = false;
 boolean stopState [totalSensors];
 boolean shyRunTrigger = false;
 boolean shyResetTrigger = false;
@@ -57,39 +59,47 @@ void setup() {
 void loop() {
   controll.run();
   /// Running moment ////
-
-  if (resetState == false) {
-    if (riseTrigger == false) {
-      initRiseTime = millis();
+  if (isTherePeople == false) {
+    if (resetState == false) {
+      if (riseTrigger == false) {
+        initRiseTime = millis();
+      }
+      riseTrigger = true;
+      eventRiseTimer();
+    } else {
+      /// stop moment ////
+      if (resetTrigger == false) {
+        initResetTime = millis();
+      }
+      resetTrigger = true;
+      eventResetTimer();
+    }
+  } else {
+    if (resetShyState == false) {
       if (shyRunTrigger == true) {
         initShyTime =  millis();
-      } else {
+      }
+      shyRunTrigger = true;
+      shyRunTimer();
+    } else {
+      if (shyResetTrigger == false) {
         resetShyTime = millis();
       }
+      shyResetTrigger = true;
+      shyResetTimer();
     }
-    riseTrigger = true;
-    eventRiseTimer();
-
-
-
-  } else {
-    /// stop moment ////
-    if (resetTrigger == false) {
-      initResetTime = millis();
-    }
-    resetTrigger = true;
-    eventResetTimer();
-
   }
+
   for (int i = 0; i < totalSensors; i++) {
     if (stopState[i]) {
       digitalWrite(motorPins[i], LOW);
+      isTherePeople = true;
+      Serial.print(isTherePeople);
     } else {
       digitalWrite(motorPins[i], HIGH);
+      //isTherePeople = false;
     }
-
   }
-
 }
 
 void sweep() {
@@ -105,8 +115,6 @@ void sweep() {
   for (int i = 0; i < totalSensors; i++) {
     if (sensors[i] == 1) {
       stopState[i] = true;
-      shyRunTrigger = true;
-      durShyTime = millis();
       switch (sensorPins[i]) {
         case 2:
           values[i] = "#0 P700 S300 #1 P2300 S300";
@@ -138,48 +146,65 @@ void sweep() {
       };
     } else {
       stopState[i] = false;
-      shyResetTimer();
     }
   }
-
-
-  if (resetState == false) {
-    String stopCom = values[0] + values[1] + values[2] + values[3] + values[4] + values[5];
-    String runCom = "#0 P700 S300 #1 P2300 S300 #8 P700 S300 #9 P2300 S300 #16 P700 S300 #17 P2300 S300 #4 P900 S300 #5 P2100 S300 #12 P900 S300 #13 P2100 S300 #20 P900 S300 #21 P2100";
-    Serial.print(stopCom);
-    //    delay(20);
-    Serial.print("\r");
-    Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
-    Serial.print("\r");
-    delay(800);
-    Serial.print(runCom);
-    //    delay(20);
-    Serial.print("\r");
-    Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
-    Serial.print("\r");
-    delay(3000);
-  }
-  else {
-    String stopCom = "#0 P2150 S400 #1 P850 S400 #8 P2150 S400 #9 P850 S400 #16 P2200 S400 #17 P800 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
-    Serial.print(stopCom);
-    delay(20);
-    Serial.print("\r");
-//    for (int i = 0; i < totalSensors; i++) {
-//      digitalWrite(motorPins[i], LOW);
+  if (isTherePeople == false) {
+    if (resetState == false) {
+      String stopCom = values[0] + values[1] + values[2] + values[3] + values[4] + values[5];
+      String runCom = "#0 P700 S300 #1 P2300 S300 #8 P700 S300 #9 P2300 S300 #16 P700 S300 #17 P2300 S300 #4 P900 S300 #5 P2100 S300 #12 P900 S300 #13 P2100 S300 #20 P900 S300 #21 P2100";
+      Serial.print(stopCom);
+      //    delay(20);
+      Serial.print("\r");
+      Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
+      Serial.print("\r");
+      delay(800);
+      Serial.print(runCom);
+      //    delay(20);
+      Serial.print("\r");
+      Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
+      Serial.print("\r");
+      delay(3000);
+    }
+    else {
+      String stopCom = "#0 P2150 S400 #1 P850 S400 #8 P2150 S400 #9 P850 S400 #16 P2200 S400 #17 P800 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
+      Serial.print(stopCom);
+      delay(20);
+      Serial.print("\r");
+      //    for (int i = 0; i < totalSensors; i++) {
+      //      digitalWrite(motorPins[i], LOW);
+      //    }
+      delay(800);
+    }
+  } else { // If isTherePeople = FALSE
+//    if (resetShyState == false) {
+      String stopCom = "#0 P2150 S400 #1 P850 S400 #8 P2150 S400 #9 P850 S400 #16 P2200 S400 #17 P800 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
+      Serial.print(stopCom);
+      delay(20);
+      Serial.print("\r");
+      delay(800);
+//    } 
+//    else {
+//      String stopCom = values[0] + values[1] + values[2] + values[3] + values[4] + values[5];
+//      String runCom = "#0 P700 S300 #1 P2300 S300 #8 P700 S300 #9 P2300 S300 #16 P700 S300 #17 P2300 S300 #4 P900 S300 #5 P2100 S300 #12 P900 S300 #13 P2100 S300 #20 P900 S300 #21 P2100";
+//      Serial.print(stopCom);
+//      //    delay(20);
+//      Serial.print("\r");
+//      Serial.print("#3 P1130 S3500 #15 P1130 S3500 #11 P1130 S3500 #7 P1130 S3500 #19 P1130 S3500 #23 P1130 S3500");
+//      Serial.print("\r");
+//      delay(800);
+//      Serial.print(runCom);
+//      //    delay(20);
+//      Serial.print("\r");
+//      Serial.print("#3 P650 S1000 #15 P650 S1000 #11 P650 S1000 #7 P650 S1000 #19 P650 S1000 #23 P650 S1000");
+//      Serial.print("\r");
+//      delay(3000);
 //    }
-    delay(800);
-
   }
-  shyRunTimer();
 }
-
 int* checkSensors()  {
   for (int i = 0; i < totalSensors; i++) {
     sensors[i] = digitalRead(sensorPins[i]);
-    //Serial.print(sensors[i]);
-    //    Serial.print(" / ");
   }
-  //  Serial.println("");
   return sensors;
 }
 
@@ -201,24 +226,28 @@ void eventResetTimer() {
 
 void shyRunTimer() {
   if (durShyTime - initShyTime > shyRunLimit) {
-    resetState = true;
-    riseTrigger = false;
+
+    resetShyState = true;
     shyRunTrigger = false;
-    durShyTime = 0;
-    initShyTime = 0;
-    //Serial.print(durShyTime - initShyTime);
-    //Serial.println("");
+
+    //riseTrigger = false;
+    //durShyTime = 0;
+    //initShyTime = 0;
   }
 }
 
 
 void shyResetTimer() {
   if (resetShyTime - durShyTime > shyResetLimit) {
-    shyRunTrigger = false;
-    resetState = false;
-    resetTrigger = false;
-    durShyTime = 0;
-    resetShyTime = 0;
+
+    resetShyState = false;
+    shyResetTrigger = false;
+
+    //shyRunTrigger = false;
+    //resetState = false;
+    //resetTrigger = false;
+    //durShyTime = 0;
+    //resetShyTime = 0;
   }
 
 }
