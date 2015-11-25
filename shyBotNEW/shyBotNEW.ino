@@ -44,7 +44,7 @@ void loop() {
   if (!isShy) {
     defaultSweep(collapse);
     defaultSensorRead(shy);
-  }else{
+  } else {
     collapse();
   }
 }
@@ -73,6 +73,9 @@ void defaultSweep (GeneralSweep callback) {
 
 ///////////////////////
 void collapse() {
+  for (int i = 0; i < totalSensors; i++) {
+    digitalWrite(motorPins[i], LOW);
+  }
   String stopCom = "#0 P2000 S400 #1 P1000 S400 #8 P2000 S400 #9 P1000 S400 #16 P2000 S400 #17 P1000 S400 #4 P1700 S250 #5 P1300 S250 #12 P1700 S250 #13 P1300 S250 #20 P1700 S250 #21 P1300 S250";
   Serial.print(stopCom);
   Serial.print("\r");
