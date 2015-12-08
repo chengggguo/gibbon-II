@@ -8,8 +8,8 @@ int sensorPins [totalElements] = {14, 15, 16, 17, 18, 19};
 Servo bubbleServo;
 int bubbleServoPin = 44;
 int bubbleServoAngleLimit = 60;
-int bubbleServoAngleStart = 36;
-int openSpeed = 15; //The higher this number the slower the reaction
+int bubbleServoAngleStart = 33;
+int openSpeed = 40; //The higher this number the slower the reaction
 int closeSpeed = 3; //The higher this number the slower the reaction
 int timeOpen = 3000; //time bubbles open //The higher this number the slower the reaction
 
@@ -28,16 +28,16 @@ int shortArmStopShyAngle = 90; //FOR SHORT ARMS ONLY!!
 bool armState[totalElements];
 int stateIndex = 0;
 int isItShyCounter = 0;
-int shyCycleLimit = 80; // default use 50 // measured in the system's cycles --> about 1 second each cycle
+int shyCycleLimit = 50; // default use 50 // measured in the system's cycles --> about 1 second each cycle
 int temp = 0;
 int s = 8;
 
 //GENERAL CYCLE STUFF
 bool ison = true;
 int generalCycle = 0;
-int generalLoopLimit = 110; // default use 90 // measured in the system's cycles --> about 1 second each cycle
-unsigned long halt1 = 400000;// first delay when arms are UP for ---- 8 mins use 480000
-unsigned long halt2 = 5000;// second delay when arms are DOWN for ---- 8 mins use 480000
+int generalLoopLimit = 90; // default use 90 // measured in the system's cycles --> about 1 second each cycle
+unsigned long halt1 = 1800000;// first delay when arms are UP for ---- 8 mins use 480000
+unsigned long halt2 = 50000;// second delay when arms are DOWN for ---- 8 mins use 480000
 int delayBeforeCollapse = 15000;
 //----------------------------------
 void setup() {
@@ -143,7 +143,7 @@ void sweepAll(int inc) {
     delay(closeSpeed);
   }
 
-//  delay(timeOpen);
+ delay(1000);// close delay
   
   for (servoPos = sweepLimit; servoPos >= servoInitPos; servoPos -= 1) {
     stateIndex = 0;
