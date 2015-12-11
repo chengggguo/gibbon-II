@@ -1,8 +1,8 @@
 #include <Servo.h>
 
 const int totalElements = 6;
-int motorPins [totalElements] = {31, 47, 33, 45, 35, 43};
-int sensorPins [totalElements] = {14, 15, 16, 17, 18, 19};
+int motorPins [totalElements] = {14, 15, 16, 17, 18, 19};
+int sensorPins [totalElements] = {32, 34, 36, 38, 40, 42};
 
 //BUBBLE SERVOS
 Servo bubbleServo;
@@ -35,9 +35,9 @@ int s = 8;
 //GENERAL CYCLE STUFF
 bool ison = true;
 int generalCycle = 0;
-int generalLoopLimit = 90; // default use 90 // measured in the system's cycles --> about 1 second each cycle
-unsigned long halt1 = 1800000;// first delay when arms are UP for ---- 8 mins use 480000
-unsigned long halt2 = 50000;// second delay when arms are DOWN for ---- 8 mins use 480000
+int generalLoopLimit = 70; // default use 90 // measured in the system's cycles --> about 1 second each cycle
+unsigned long halt1 = 900000;// first delay when arms are UP for ---- 8 mins use 480000
+unsigned long halt2 = 5000;// second delay when arms are DOWN for ---- 8 mins use 480000
 int delayBeforeCollapse = 15000;
 //----------------------------------
 void setup() {
@@ -117,7 +117,7 @@ void sweepAll(int inc) {
   int shyCountTrigger = 0;
   for (servoPos = servoInitPos; servoPos <= sweepLimit; servoPos += 1) {
     stateIndex = 0;
-    for (int i = 0; i <= totalServos - 1; i += 2) {  
+    for (int i = 0; i <= totalServos - 1; i += 2) {
       if (armState[stateIndex] == false) {
         if (servoPins[i] == 2 || servoPins[i] == 4 || servoPins[i] == 6) {
           servos[i + 1].write(servoPos);
@@ -143,8 +143,8 @@ void sweepAll(int inc) {
     delay(closeSpeed);
   }
 
- delay(1000);// close delay
-  
+  delay(1000);// close delay
+
   for (servoPos = sweepLimit; servoPos >= servoInitPos; servoPos -= 1) {
     stateIndex = 0;
     for (int i = 0; i <= totalServos - 1; i += 2) {
@@ -169,7 +169,7 @@ void sweepAll(int inc) {
     //mapped = map(servoPos, sweepLimit, servoInitPos, bubbleServoAngleLimit, bubbleServoAngleStart);
   }
 
-  for(int t=0; t<6; t++){
+  for (int t = 0; t < 6; t++) {
     temp += int(armState[t]);
   }
 
@@ -185,7 +185,7 @@ void sweepAll(int inc) {
   }
   delay(timeOpen);
 
-  
+
 }
 
 //----------------------------------
@@ -209,14 +209,14 @@ void runShyState(int inc) {
         servos[i + 1].write(servoPos);
         servos[i].write(angleLimit - servoPos);
         delay(inc);
-      } 
-//      else {
-//        if (servoPos < shortArmStopShyAngle) {
-//          servos[i + 1].write(servoPos + teethCorrect);
-//          servos[i].write(angleLimit - servoPos + teethCorrect);
-//        }
-//        delay(inc);
-//      }
+      }
+      //      else {
+      //        if (servoPos < shortArmStopShyAngle) {
+      //          servos[i + 1].write(servoPos + teethCorrect);
+      //          servos[i].write(angleLimit - servoPos + teethCorrect);
+      //        }
+      //        delay(inc);
+      //      }
     }
   }
 }
@@ -229,14 +229,14 @@ void transitionToStart(int slowInc) {
         servos[i + 1].write(servoPos );
         servos[i].write(angleLimit - servoPos);
         delay(slowInc);
-      } 
-//      else {
-//        if (servoPos < shortArmStopShyAngle) {
-//          servos[i + 1].write(servoPos + teethCorrect);
-//          servos[i].write(angleLimit - servoPos + teethCorrect);
-//        }
-//        delay(slowInc);
-//      }
+      }
+      //      else {
+      //        if (servoPos < shortArmStopShyAngle) {
+      //          servos[i + 1].write(servoPos + teethCorrect);
+      //          servos[i].write(angleLimit - servoPos + teethCorrect);
+      //        }
+      //        delay(slowInc);
+      //      }
     }
     bubbleServo.write(servoPos);
     delay(slowInc);
